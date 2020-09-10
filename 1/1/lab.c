@@ -23,15 +23,23 @@ int main() {
 
 	
 	struct timespec tm_start, tm_finish;
+	double best_res = 0;
+	double res;
+	
+	for (int i = 0; i < 5; ++i) {
+		clock_gettime(CLOCK_REALTIME, &tm_start);
+		CGM(A, b, x, eps, &cnt);
+		clock_gettime(CLOCK_REALTIME, &tm_finish);
+	
+		res = tm_finish.tv_sec - tm_start.tv_sec + 1e-9 * (tm_finish.tv_nsec - tm_start.tv_nsec);
 
-	clock_gettime (CLOCK_REALTIME, &tm_start);
-	CGM(A, b, x, eps, &cnt);
-	clock_gettime (CLOCK_REALTIME, &tm_finish);
+		if (best_res == 0 || res < best_res) {
+			best_res = res;
+		}
+	}
 
 	printf("Iterations count: %d\n", cnt);
-	double time_elapsed = tm_finish.tv_sec - tm_start.tv_sec + 1e-9 * (tm_finish.tv_nsec - tm_start.tv_nsec);
-	printf("Time elapsed: %lf sec.\n", time_elapsed);
-
+	printf("Time elapsed: %lf sec.\n", best_res);
 
 	printOutput(x, "output.txt");
 

@@ -1,2 +1,2 @@
 all:
-	gcc lab1.c ../matrix.c -o lab1.exe
+	gcc lab.c ../matrix.c -std=gnu99 -o lab.exe

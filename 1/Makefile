@@ -1,2 +1,2 @@
 all:
-	gcc generator.c -o generator.exe
+	gcc gen.c -std=gnu99 -o gen.exe

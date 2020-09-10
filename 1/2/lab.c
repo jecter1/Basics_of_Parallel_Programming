@@ -30,14 +30,23 @@ int main(int argc, char** argv) {
 	int cnt;
 	Matrix x = matrixCreate(VECTOR_WIDTH, b.h);
 
-	double tm_start = MPI_Wtime();
-	CGM(world_size, world_rank, A, b, x, eps, &cnt);
-	double tm_finish = MPI_Wtime();
+	double best_res = 0;
+	double res;
+	
+	for (int i = 0; i < 5; ++i) {
+		double tm_start = MPI_Wtime();
+		CGM(world_size, world_rank, A, b, x, eps, &cnt);
+		double tm_finish = MPI_Wtime();
+		res = tm_finish - tm_start;
+		
+		if (best_res == 0 || res < best_res) {
+			best_res = res;
+		}
+	}
 
 	if (world_rank == MAIN_PROC) {
 		printf("Iterations count: %d\n", cnt);
-		double time_elapsed = tm_finish - tm_start;
-		printf("Time elapsed: %lf sec.\n", time_elapsed);
+		printf("Time elapsed: %lf sec.\n", best_res);
 
 		printOutput(x, "output.txt");
 	}
