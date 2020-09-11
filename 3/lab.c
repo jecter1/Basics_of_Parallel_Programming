@@ -8,11 +8,8 @@ void execute(int n1, int n2, int n3, int m1, int m2, int m3,
 int main(int argc, char* argv[]) {
 	MPI_Init(&argc, &argv);
 
-	int p1, p2;
-	Read_input(argc, argv, &p1, &p2);
-
-	int n1, n2, n3, m1, m2, m3;
-	Calculate_matrices_sizes(p1, p2, &n1, &n2, &n3, &m1, &m2, &m3);
+	int p1, p2, n1, n2, n3, m1, m2, m3;
+	Read_input(argc, argv, &p1, &p2, &n1, &n2, &n3, &m1, &m2, &m3);
 
 	MPI_Comm comm_row, comm_col;
 	Create_grid_communicators(MPI_COMM_WORLD, p1, p2, &comm_row, &comm_col);

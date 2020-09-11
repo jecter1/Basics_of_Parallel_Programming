@@ -7,18 +7,14 @@
 void Read_input(
 	int argc, 
 	char* argv[], 
-	int* height, 
-	int* width);
-
-void Calculate_matrices_sizes(
-	int grid_height, 
-	int grid_width,
+	int* grid_height, 
+	int* grid_width, 
 	int* height1, 
 	int* width1, 
-	int* width2,
-	int* sub_height_1, 
-	int* sub_width_1, 
-	int* sub_width_2);
+	int* width2, 
+	int* subheight1, 
+	int* subwidth1, 
+	int* subwidth2);
 
 void Create_grid_communicators(
 	MPI_Comm comm_old, 

@@ -1,33 +1,40 @@
 #include "functions.h"
 
-void Read_input(int argc, char* argv[], int* height, int* width) {
-	const int DIMS = 2;
+void Read_input(int argc, char* argv[], int* grid_height, int* grid_width, 
+	int* height1, int* width1, int* width2, 
+	int* subheight1, int* subwidth1, int* subwidth2) {
 
-	if (argc != DIMS + 1) {
+	const int DIMS = 2;
+	const int CONST_CNT = 3;
+
+	if (argc != DIMS + CONST_CNT + 1) {
 		MPI_Abort(MPI_COMM_WORLD, -1); // incorrect usage
 	}
 
-	*height = atoi(argv[1]);
-	*width 	= atoi(argv[2]);
+	*grid_height = atoi(argv[1]);
+	*grid_width = atoi(argv[2]);
+	*height1 = atoi(argv[3]);
+	*width1 = atoi(argv[4]);
+	*width2 = atoi(argv[5]);
 
 	int world_size;
 	MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 	
-	if (world_size != (*height) * (*width)) {
+	if (world_size != (*grid_height) * (*grid_width)) {
 		MPI_Abort(MPI_COMM_WORLD, -2); // incorrect usage
 	}
-}
 
-void Calculate_matrices_sizes(int grid_height, int grid_width, int* height1, int* width1, int* width2,
-	int* sub_height_1, int* sub_width_1, int* sub_width_2) {
+	if ((*height1) < 1 || (*width1) < 1 || (*width2) < 1 || (*grid_height) < 1 || (*grid_width) < 1) {
+		MPI_Abort(MPI_COMM_WORLD, -3); // incorrect usage
+	}
 
-	*sub_height_1 = 100;
-	*sub_width_1 = (grid_width + grid_height) * 50;
-	*sub_width_2 = 100; 
+	if ((*height1) % (*grid_height) != 0 || (*width2) % (*grid_width) != 0) {
+		MPI_Abort(MPI_COMM_WORLD, -4); // incorrect usage
+	}
 
-	*height1 = *sub_height_1 * grid_height;
-	*width1 = *sub_width_1;
-	*width2 = *sub_width_2 * grid_width;
+	*subheight1 = *height1 / *grid_height;
+	*subwidth1 = *width1;
+	*subwidth2 = *width2 / *grid_width;
 }
 
 void Create_grid_communicators(MPI_Comm comm_old, int height, int width, MPI_Comm* comm_row, MPI_Comm* comm_col) {
