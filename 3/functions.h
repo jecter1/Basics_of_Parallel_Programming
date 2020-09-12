@@ -70,4 +70,8 @@ void Gather_result(
 	MPI_Comm comm_col,
 	MPI_Comm comm_row);
 
+void Use_algorithm(int n1, int n2, int n3, int m1, int m2, int m3,
+	int rank_col_main, int rank_row_main, int rank_col, int rank_row,
+	MPI_Comm comm_col, MPI_Comm comm_row, double** C);
+
 #endif

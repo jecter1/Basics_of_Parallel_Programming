@@ -256,3 +256,57 @@ void Gather_result(const double* sendbuf, int sendheight, int sendwidth,
 		free(preC);
 	}
 }
+
+void Use_algorithm(int n1, int n2, int n3, int m1, int m2, int m3,
+	int rank_col_main, int rank_row_main, int rank_col, int rank_row,
+	MPI_Comm comm_col, MPI_Comm comm_row, double** C) {
+
+	// Create matrices A and B on process with coordinates (0, 0)
+	double *A = NULL, *B = NULL;
+	if ((rank_col == rank_col_main) && (rank_row == rank_row_main)) {
+		Create_filled_matrix(n1, n2, &A);
+		Create_filled_matrix(n2, n3, &B);
+	}
+
+	// Scatter matrix A in column #0
+	double* subA = (double*)malloc(sizeof(double) * m1 * m2);
+	if (rank_row == rank_row_main) {
+		Scatter_horizontal_stripes(A, n1, n2, subA, rank_col_main, comm_col);
+
+		if (rank_col == rank_col_main) { 
+			free(A);
+		}
+	}
+
+	// Scatter matrix B in row #0
+	double* subB = (double*)malloc(sizeof(double) * m2 * m3);
+	if (rank_col == rank_col_main) {
+		Scatter_vertical_stripes(B, n2, n3, subB, rank_row_main, comm_row);
+		
+		if (rank_row == rank_row_main) {
+			free(B);
+		}
+	}
+
+	// Broadcast matrix subA in rows from column #0
+	MPI_Bcast(subA, m1 * m2, MPI_DOUBLE, rank_row_main, comm_row);
+
+	// Broadcast matrix subB in columns from row #0
+	MPI_Bcast(subB, m2 * m3, MPI_DOUBLE, rank_col_main, comm_col);
+
+	// Calculate matrix subC on each process
+	double* subC = (double*)malloc(sizeof(double) * m1 * m3);
+	Multiplicate_matrices(m1, m2, m3, subA, subB, subC);
+
+	free(subA);
+	free(subB);
+
+	// Gather result on process with coordinates (0, 0)
+	if ((rank_row == rank_row_main) && (rank_col == rank_col_main)) {
+		*C = (double*)malloc(sizeof(double) * n1 * n3);
+	}
+
+	Gather_result(subC, m1, m3, *C, rank_col_main, rank_row_main, comm_col, comm_row);
+
+	free(subC);
+}
