@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
 	int rank_col, rank_row, rank_col_main, rank_row_main;
 	Calculate_grid_ranks(comm_row, comm_col, &rank_row, &rank_col, &rank_row_main, &rank_col_main);
 
-	const int iterations = 10;
+	const int iterations = 5;
 	double best_time = 0;
 	double* C;
 	for (int i = 0; i < iterations; ++i) {
@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 
 	// Print result to "out.txt"
 	if ((rank_row == rank_row_main) && (rank_col == rank_col_main)) {
-		printf("Best time of %d iterations: %lf sec.\n", iterations, best_time);
+		printf("Best time of %d iteration(s): %lf sec.\n", iterations, best_time);
 
 		FILE* fout = fopen("out.txt", "w");
 

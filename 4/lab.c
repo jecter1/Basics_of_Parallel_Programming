@@ -4,7 +4,7 @@ int main(int argc, char* argv[]) {
 	MPI_Init(&argc, &argv);
 
 	const int MAIN_RANK = 0;
-	const int ITERATIONS_CNT = 1;
+	const int ITERATIONS_CNT = 5;
 	
 	int rank, size;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);

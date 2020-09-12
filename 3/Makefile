@@ -1,3 +1,3 @@
 all:
-	mpicc lab.c functions.c -std=gnu99 -o lab.exe
-	mpecc -mpilog lab.c functions.c -std=gnu99 -o mpe.exe
+	mpicc lab.c functions.c -o lab.exe
+	mpecc -mpilog -pthread lab.c functions.c -o mpe.exe

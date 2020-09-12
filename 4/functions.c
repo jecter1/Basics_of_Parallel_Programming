@@ -4,14 +4,17 @@
 void Read_arguments_values(int argc, char* argv[], int* Nx, int* Ny, int* Nz) {
 	const int DIMS = 4;
 	const int MAIN_RANK = 0;
-	const int MIN_VALUE = 1;
+	const int MIN_VALUE = 2;
 
 	int rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
 	if (argc != DIMS) {
 		if (rank == MAIN_RANK) {
-			fprintf(stderr, "Usage: mpirun -np 'proc_num' %s 'Nx' 'Ny' 'Nz'\n", argv[0]);
+			fprintf(stderr, "Usage (cluster)\n");
+			fprintf(stderr, "\tmpirun -np 'number_of_processes' %s 'Nx' 'Ny' 'Nz'\n", argv[0]);
+			fprintf(stderr, "Usage (server)\n");
+			fprintf(stderr, "\tmpiexec -n 'number_of_processes' %s 'Nx' 'Ny' 'Nz'\n", argv[0]);
 		}
 		MPI_Abort(MPI_COMM_WORLD, -1); // incorrect usage
 	}
@@ -22,7 +25,11 @@ void Read_arguments_values(int argc, char* argv[], int* Nx, int* Ny, int* Nz) {
 
 	if ((*Nx) < MIN_VALUE || (*Ny) < MIN_VALUE || (*Nz) < MIN_VALUE) {
 		if (rank == MAIN_RANK) {
-			fprintf(stderr, "Usage: mpirun -np 'proc_num' %s 'Nx' 'Ny' 'Nz'\n", argv[0]);
+			fprintf(stderr, "Error: count of nodes (Nx, Ny, Nz) must be greater than 2\n");
+			fprintf(stderr, "Usage (cluster)\n");
+			fprintf(stderr, "\tmpirun -np 'number_of_processes' %s 'Nx' 'Ny' 'Nz'\n", argv[0]);
+			fprintf(stderr, "Usage (server)\n");
+			fprintf(stderr, "\tmpiexec -n 'number_of_processes' %s 'Nx' 'Ny' 'Nz'\n", argv[0]);
 		}
 		MPI_Abort(MPI_COMM_WORLD, -2); // incorrect usage
 	}
