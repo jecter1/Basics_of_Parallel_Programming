@@ -247,6 +247,7 @@ void* Thread_worker_start(void* args) {
 			printf("Disbalance time: %lf sec.\n", elapsed_time_max - elapsed_time_min);
 			printf("Disbalance perc: %lf %%\n", (elapsed_time_max - elapsed_time_min) / elapsed_time_max * 100);
 		}
+		MPI_Barrier(MPI_COMM_WORLD);
 		for (int rank_iter = 0; rank_iter < size; rank_iter++) {
 			if (rank == rank_iter) {
 				printf("\tProcess #%d\n", rank + 1);
@@ -290,6 +291,7 @@ void Set_tasks_weight(int *tasks, int count, int iterCounter) {
 
 void Execute_tasks(const int *tasks, int* tasks_executed) {
 	pthread_mutex_lock(&mutex_tasks_remaining);
+
 	for (int i = 0; tasks_remaining; ++i, --tasks_remaining) {
 		pthread_mutex_unlock(&mutex_tasks_remaining);
 
